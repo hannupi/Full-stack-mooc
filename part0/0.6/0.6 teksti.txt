@@ -1,0 +1,2 @@
+selain -> palvelin: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+palvein -> selain: uusi data päivittyy sivulle selaimen sijaan

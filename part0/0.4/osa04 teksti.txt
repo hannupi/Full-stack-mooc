@@ -1,0 +1,12 @@
+selain -> palvelin: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+palvelin -> selain: uudelleenohjaus
+selain -> palvelin: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+palvelin -> selain : html 
+selain -> palvelin : HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin -> selain : css
+selain -> palvelin : HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+palvelin -> selain : javascript
+
+note over selain: json data pyyntö
+selain -> palvelin : HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin -> selain : json data

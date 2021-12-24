@@ -1,0 +1,10 @@
+selain -> palvelin: GET https://studies.cs.helsinki.fi/exampleapp/spa
+palvelin -> selain: html
+selain -> palvelin: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+palvelin -> selain: css
+selain -> palvelin: https://studies.cs.helsinki.fi/exampleapp/spa.js
+palvelin -> selain: javascript
+note over selain: javascript taas suorittaa json pyynnön
+
+selain -> palvelin: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+palvelin -> selain: json data

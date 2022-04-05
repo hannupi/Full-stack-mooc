@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
 
-const Header = ({header}) => <h1>{header}</h1>
+const Header = ({ header }) => <h1>{header}</h1>
 
-const Btn = ({onClick,text}) => {
-  return(
+const Btn = ({ onClick, text }) => {
+  return (
     <button onClick={onClick}>
       {text}
     </button>
@@ -12,10 +12,11 @@ const Btn = ({onClick,text}) => {
 }
 
 const Votes = (props) => {
-  return(
+  console.log(props)
+  return (
     <div>
       <p>
-        Has {props.value} votes
+        has {props.value} votes
       </p>
     </div>
   )
@@ -40,32 +41,43 @@ const App = () => {
     current[selected] += 1;
     setPoint(current);
   }
-  /* TODO best anectode
-  const Best = ({anecdotes, point}) => {
-    if (true) {
-      return(
-        <p>
-          {anecdotes}
-        </p>
+
+  const Best = (props) => {
+    console.log("best", props)
+    var x = 0
+    props.amount.forEach(element => {
+      if (element > x) {
+        x = element
+      }
+    })
+    if (x > 1) {
+      return (
+        <div>
+          <p>
+            {anecdotes[point.indexOf(x)]}
+          </p>
+          <p>
+            has {x} votes
+          </p>
+        </div>
       )
     }
     else {
-      return(
+      return (
         <p>No votes yet!</p>
       )
-      
-    } 
-  }*/
-
+    }
+  }
 
   return (
     <div>
-      <Header header="Anectode of the day"/>
+      <Header header="Anectode of the day" />
       <p>{anecdotes[selected]}</p>
-      <Votes value={point[selected]}/>
-      <Btn onClick={()=> setSelected(Math.floor(Math.random() * 7))} text="next anecdote"/>
-      <Btn onClick={VoteUp} text="vote"/>   
-
+      <Votes value={point[selected]} />
+      <Btn onClick={() => setSelected(Math.floor(Math.random() * 7))} text="next anecdote" />
+      <Btn onClick={VoteUp} text="vote" />
+      <Header header="Anecdote with most votes" />
+      <Best amount={point} />
     </div>
   )
 }

@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import Persons from './components/Persons'
 import Form from './components/Form'
 import Filter from './components/Filter'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState("")
+  const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then(axiosResponse => {
+        setPersons(axiosResponse.data)
+      })
+  }, [])
 
 
   const submitInfo = (event) => {
@@ -22,7 +26,7 @@ const App = () => {
       number: newNumber,
     }
 
-    if (persons.find(({name}) => name === infoObject.name)) {
+    if (persons.find(({ name }) => name === infoObject.name)) {
       alert(`${newName} is already added to phonebook`)
     }
     else {
@@ -42,7 +46,7 @@ const App = () => {
 
   const filterChange = (event) => setFilter(event.target.value)
 
-  
+  const personsFiltered = persons.filter(person => person.name.includes(filter))
 
   return (
     <div>
@@ -50,7 +54,7 @@ const App = () => {
       <Filter filter={filter} filterChange={filterChange} />
 
       <h2>Add a new</h2>
-      <Form 
+      <Form
         submitInfo={submitInfo}
         newName={newName}
         nameChange={nameChange}
@@ -59,10 +63,9 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter}/>
+      <Persons persons={personsFiltered} />
     </div>
   )
-
 }
 
 export default App

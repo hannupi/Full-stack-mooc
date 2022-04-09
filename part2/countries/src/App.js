@@ -51,6 +51,7 @@ function App() {
   const [results, setResults] = useState([])
   const [selectedCountries, setSelectedCountries] = useState([])
 
+  // Tässä jostain syystä APIn uudempi versio ei suostu toimimaan, jouduin käyttämään vanhempaa versiota.
   useEffect(() => {
     axios
       .get("https://restcountries.com/v2/all")

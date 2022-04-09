@@ -3,6 +3,7 @@ import axios from 'axios'
 import Persons from './components/Persons'
 import Form from './components/Form'
 import Filter from './components/Filter'
+import getPersons from './services/getPersons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,8 +12,8 @@ const App = () => {
   const [filter, setFilter] = useState("")
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
+    getPersons
+      .getAll()
       .then(axiosResponse => {
         setPersons(axiosResponse.data)
       })
@@ -26,14 +27,33 @@ const App = () => {
       number: newNumber,
     }
 
-    if (persons.find(({ name }) => name === infoObject.name)) {
-      alert(`${newName} is already added to phonebook`)
+    if (persons.find(({ name }) => name.toLowerCase() === infoObject.name.toLowerCase())) {
+      // Tarvii toimivamman IDn haun
+      let findRightId = persons.filter(person => person.name === infoObject.name)
+      let rightId = findRightId[0].id
+      console.log(persons.map(person => person.id))
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        getPersons
+          .update(rightId, infoObject)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== rightId ? person : response))
+          })
+      }
     }
     else {
-      setPersons(persons.concat(infoObject))
+      getPersons
+        .createPerson(infoObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+        })
     }
     setNewName("")
     setNewNumber("")
+  }
+
+  const deletePerson = event => {
+    getPersons
+      .deletePerson(event.target.value)
   }
 
   const nameChange = (event) => {
@@ -46,7 +66,7 @@ const App = () => {
 
   const filterChange = (event) => setFilter(event.target.value)
 
-  const personsFiltered = persons.filter(person => person.name.includes(filter))
+  const personsFiltered = persons.filter(person => person.name.toLowerCase().includes(filter))
 
   return (
     <div>
@@ -63,7 +83,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={personsFiltered} />
+      <Persons persons={personsFiltered} deletePerson={deletePerson} />
     </div>
   )
 }

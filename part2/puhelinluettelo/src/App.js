@@ -1,15 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import Form from './components/Form'
 import Filter from './components/Filter'
 import getPersons from './services/getPersons'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [filter, setFilter] = useState("")
+  const [errorMsg, setErrorMsg] = useState(null)
+
+  const Infomessage = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+    if (message.includes("Changed") || message.includes("Added") || message.includes("Deleted")) {
+      return (
+        <p className='popup'>
+          {message}
+        </p>
+      )
+    }
+    else {
+      return (
+        <div>
+          <p className='deleteError'>{message}</p>
+        </div>
+      )
+    }
+  }
 
   useEffect(() => {
     getPersons
@@ -28,7 +49,7 @@ const App = () => {
     }
 
     if (persons.find(({ name }) => name.toLowerCase() === infoObject.name.toLowerCase())) {
-      // Tarvii toimivamman IDn haun
+      // PUT
       let findRightId = persons.filter(person => person.name === infoObject.name)
       let rightId = findRightId[0].id
       console.log(persons.map(person => person.id))
@@ -37,14 +58,30 @@ const App = () => {
           .update(rightId, infoObject)
           .then(response => {
             setPersons(persons.map(person => person.id !== rightId ? person : response))
+            setErrorMsg(`Changed ${infoObject.name}`)
+            setTimeout(() => {
+              setErrorMsg(null)
+            }, 4000)
+          })
+          .catch(() => {
+            setErrorMsg(`Information of ${infoObject.name} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMsg(null)
+            }, 4000)
           })
       }
     }
+
     else {
+      // POST
       getPersons
         .createPerson(infoObject)
         .then(response => {
           setPersons(persons.concat(response.data))
+          setErrorMsg(`Added ${infoObject.name}`)
+          setTimeout(() => {
+            setErrorMsg(null)
+          }, 2000)
         })
     }
     setNewName("")
@@ -52,8 +89,16 @@ const App = () => {
   }
 
   const deletePerson = event => {
+    // DELETE 
     getPersons
       .deletePerson(event.target.value)
+
+      .then(() => {
+        setErrorMsg(`Deleted user`)
+        setTimeout(() => {
+          setErrorMsg(null)
+        }, 3000)
+      })
   }
 
   const nameChange = (event) => {
@@ -70,6 +115,7 @@ const App = () => {
 
   return (
     <div>
+      <Infomessage message={errorMsg} />
       <h2>Phonebook</h2>
       <Filter filter={filter} filterChange={filterChange} />
 

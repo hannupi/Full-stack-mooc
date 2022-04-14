@@ -43,6 +43,7 @@ const RenderResult = ({ result }) => {
       </ul>
       <img alt="Countrys flag" src={result.flag} width="100" />
 
+      <h2>Weather in {result.name}</h2>
     </div>
   )
 }
@@ -62,6 +63,7 @@ function App() {
   console.log("length: ", results.length)
 
 
+
   const searchChange = event => {
     const resultsFiltered = results.filter(result => result.name.toLowerCase().includes(event.target.value.toLowerCase()))
     setSelectedCountries(resultsFiltered)
@@ -72,6 +74,7 @@ function App() {
     <div>
       find countries <input onChange={searchChange} />
       <Limit selectedCountries={selectedCountries} setSelectedCountries={setSelectedCountries} />
+
     </div>
   )
 }

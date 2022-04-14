@@ -49,7 +49,7 @@ const App = () => {
     }
 
     if (persons.find(({ name }) => name.toLowerCase() === infoObject.name.toLowerCase())) {
-      // PUT
+      // PUT, case sensitive (doesnt ignore spaces)
       let findRightId = persons.filter(person => person.name === infoObject.name)
       let rightId = findRightId[0].id
       console.log(persons.map(person => person.id))
@@ -63,26 +63,32 @@ const App = () => {
               setErrorMsg(null)
             }, 4000)
           })
-          .catch(() => {
-            setErrorMsg(`Information of ${infoObject.name} has already been removed from server`)
+          .catch(error => {
+            setErrorMsg(`${error.response.data.error}`)
             setTimeout(() => {
               setErrorMsg(null)
             }, 4000)
           })
       }
     }
-
     else {
       // POST
       getPersons
         .createPerson(infoObject)
         .then(response => {
-          setPersons(persons.concat(response.data))
+          setPersons([...persons, response.data])
           setErrorMsg(`Added ${infoObject.name}`)
           setTimeout(() => {
             setErrorMsg(null)
-          }, 2000)
-        })
+          }, 4000)
+          })
+          .catch(error => {
+            console.log("tassa",error.response.data)
+            setErrorMsg(`${error.response.data.error}`)
+            setTimeout(() => {
+              setErrorMsg(null)
+            }, 4000)
+      })
     }
     setNewName("")
     setNewNumber("")
@@ -90,15 +96,16 @@ const App = () => {
 
   const deletePerson = event => {
     // DELETE 
-    getPersons
-      .deletePerson(event.target.value)
-
-      .then(() => {
-        setErrorMsg(`Deleted user`)
-        setTimeout(() => {
-          setErrorMsg(null)
-        }, 3000)
-      })
+    if (window.confirm(`Delete user? `)) {
+      getPersons
+        .deletePerson(event.target.value)
+        .then(() => {
+          setErrorMsg(`Deleted user`)
+          setTimeout(() => {
+            setErrorMsg(null)
+          }, 3000)
+        })
+    }
   }
 
   const nameChange = (event) => {
@@ -111,7 +118,7 @@ const App = () => {
 
   const filterChange = (event) => setFilter(event.target.value)
 
-  const personsFiltered = persons.filter(person => person.name.toLowerCase().includes(filter))
+  const personsFiltered = persons.filter(person => person.name.includes(filter))
 
   return (
     <div>

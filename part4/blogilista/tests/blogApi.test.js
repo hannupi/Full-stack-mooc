@@ -113,13 +113,23 @@ describe("API tests for blogs", () => {
 
     })
 
-    test("try to delete a post", async () => {
+    test("Try to delete a post", async () => {
         await api.delete("/api/blogs/5a422aa71b54a676234d17f8")
             .expect(204)
 
         const res = await api.get("/api/blogs")
         expect(res.body).toHaveLength(startBlogs.length - 1)
 
+    })
+
+    test("Try to change a post", async () => {
+        await api.put("/api/blogs/5a422aa71b54a676234d17f8")
+            .send({likes: 2})
+            .expect(204)
+
+        const res = await api.get("/api/blogs")
+        console.log(res.body[1].likes)
+        expect(res.body[1].likes).toEqual(2)
     })
 
 })

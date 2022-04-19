@@ -1,5 +1,4 @@
 const router = require("express").Router()
-const { response } = require("../app")
 const Blog = require("../models/blog")
 
 router.get('/', async (req, res) => {
@@ -31,12 +30,19 @@ router.post('/', async (req, res) => {
 
 router.delete("/:id", async (req,res) => {
     await Blog.findByIdAndRemove(req.params.id)
-    res.status(204).end()
+    res.status(204).send("Deleted successfully!")
 })
 
 router.put("/:id", async (req,res) => {
+
+    const blog = {
+        title: req.body.title,
+        author: req.body.author,
+        url: req.body.url,
+        likes: req.body.likes || 0,
+    }
     await Blog.findByIdAndUpdate(req.params.id, blog, {new:true})
-    response.status(200).end()
+    res.status(204).send("Changed the fields successfully!")
 })
 
 module.exports = router

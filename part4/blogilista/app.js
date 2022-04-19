@@ -1,6 +1,7 @@
 const config = require("./utilities/config")
 const { info, error } = require("./utilities/logger")
 const router = require("./controllers/blogs")
+const usersRouter = require("./controllers/users")
 const express = require('express')
 const app = express()
 const cors = require('cors')
@@ -22,5 +23,6 @@ app.use(cors())
 app.use(express.json())
 
 app.use("/api/blogs", router)
+app.use("/api/users", usersRouter)
 
 module.exports = app

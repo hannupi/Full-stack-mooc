@@ -1,8 +1,10 @@
 const router = require("express").Router()
 const Blog = require("../models/blog")
+const User = require("../models/user")
 
 router.get('/', async (req, res) => {
     const blog = await Blog.find({})
+        .populate("user", {username:1,name:1,id:1})
     if (blog) {
         res.json(blog)
     }
@@ -13,17 +15,24 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const blog = new Blog(req.body)
-
-    if (!blog.likes) {
-        blog.likes = 0
-    }
+    const user = await User.find({})
+    const blog = new Blog({
+        title: req.body.title,
+        author: req.body.author,
+        url: req.body.url,
+        likes: req.body.likes || 0,
+        user: user[0]._id
+    })
 
     if (!blog.title || !blog.url) {
         res.status(400).send("Title or URL missing!")
     }
     else {
         const savedBlog = await blog.save()
+        user[0].blogs = user[0].blogs.concat(savedBlog._id)
+        await user[0].save()
+
+
         res.json(savedBlog)
     }
 })

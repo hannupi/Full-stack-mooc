@@ -1,6 +1,8 @@
 const router = require("express").Router()
 const Blog = require("../models/blog")
 const User = require("../models/user")
+const jwt = require("jsonwebtoken")
+const blog = require("../models/blog")
 
 router.get('/', async (req, res) => {
     const blog = await Blog.find({})
@@ -14,14 +16,16 @@ router.get('/', async (req, res) => {
 
 })
 
-router.post('/', async (req, res) => {
-    const user = await User.find({})
+router.post('/', async (req, res, next) => {
+
+    const user = req.user
+
     const blog = new Blog({
         title: req.body.title,
         author: req.body.author,
         url: req.body.url,
         likes: req.body.likes || 0,
-        user: user[0]._id
+        user: user._id
     })
 
     if (!blog.title || !blog.url) {
@@ -29,8 +33,8 @@ router.post('/', async (req, res) => {
     }
     else {
         const savedBlog = await blog.save()
-        user[0].blogs = user[0].blogs.concat(savedBlog._id)
-        await user[0].save()
+        user.blogs = user.blogs.concat(savedBlog._id)
+        await user.save()
 
 
         res.json(savedBlog)
@@ -38,8 +42,16 @@ router.post('/', async (req, res) => {
 })
 
 router.delete("/:id", async (req,res) => {
-    await Blog.findByIdAndRemove(req.params.id)
-    res.status(204).send("Deleted successfully!")
+    const blog = await Blog.findById(req.params.id)
+
+    if (blog.user.toString() === req.user.id ) {
+        await Blog.findByIdAndRemove(req.params.id)
+        res.status(204).send("Deleted successfully!")
+    }
+    else {
+        res.status(400).send("Failed!")
+    }
+
 })
 
 router.put("/:id", async (req,res) => {

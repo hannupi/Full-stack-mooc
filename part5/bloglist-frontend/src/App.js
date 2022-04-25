@@ -4,6 +4,8 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import "./index.css"
 import Infomessage from "./components/Notification";
+import Toggle from "./components/Toggle";
+
 
 const App = () => {
 	const [blogs, setBlogs] = useState([]);
@@ -149,10 +151,10 @@ const App = () => {
 	return (
 		<div>
 			<Infomessage message={message} />
-
 			<span>Logged in as {user.name} </span> <button onClick={logoutAndRefresh}>Log out</button>
-			{BlogForm()}
-
+			<Toggle label={"New blog"}>
+				{BlogForm()}
+			</Toggle>
 			<BlogsList />
 		</div>
 

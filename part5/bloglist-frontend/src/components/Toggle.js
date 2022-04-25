@@ -19,6 +19,7 @@ const Toggle = forwardRef((props, ref) => {
         setVisible(!visible)
     }
 
+    // REF varten
     useImperativeHandle(ref, () => {
         return {
             toggleVisib

@@ -5,6 +5,7 @@ import loginService from "./services/login";
 import "./index.css"
 import Infomessage from "./components/Notification";
 import Toggle from "./components/Toggle";
+import BlogForm from "./components/BlogForm";
 
 
 const App = () => {
@@ -13,9 +14,7 @@ const App = () => {
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState(null);
 	const [message, setMessage] = useState(null);
-	const [title, setTitle] = useState("")
-	const [author, setAuthor] = useState("")
-	const [url, setUrl] = useState("")
+
 
 	useEffect(() => {
 		blogService.getAll()
@@ -79,14 +78,7 @@ const App = () => {
 		</div>
 	)
 
-	const sendBlog = e => {
-		e.preventDefault()
-		const blogObject = {
-			title: title,
-			author: author,
-			url: url
-		}
-
+	const sendBlog = (blogObject) => {
 		blogService
 			.create(blogObject)
 			.then(returned => {
@@ -96,32 +88,8 @@ const App = () => {
 		setTimeout(() => {
 			setMessage(null)
 		}, 4000)
-		setTitle("")
-		setAuthor("")
-		setUrl("")
+
 	}
-
-	const BlogForm = () => (
-		<div>
-			<h2>Create a new blog</h2>
-			<form onSubmit={sendBlog}>
-				<div>
-					<label>Title:</label>
-					<input type="text" value={title} name="title" onChange={(e) => setTitle(e.target.value)} />
-				</div>
-				<div>
-					<label>Author:</label>
-					<input type="text" value={author} name="author" onChange={e => setAuthor(e.target.value)} />
-				</div>
-				<div>
-					<label>URL:</label>
-					<input type="text" value={url} name="url" onChange={e => setUrl(e.target.value)} />
-				</div>
-				<button type="submit">Create</button>
-
-			</form>
-		</div>
-	)
 
 	const logoutAndRefresh = () => {
 		window.localStorage.clear()
@@ -131,29 +99,45 @@ const App = () => {
 	const BlogsList = () => {
 		return (
 			<div>
-				<h2>blogs</h2>
-
-				{blogs.map((blog) => (<Blog key={blog.id} blog={blog} />))}
+				<h2>Blogs</h2>
+				{blogs.sort((a, b) => b.likes - a.likes)
+					.map((blog) => (<Blog key={blog.id} blog={blog} updateLikes={blogUpdate} remove={deleteBlog} />))}
 			</div>
 		)
 	}
+
+	const blogUpdate = async (id, blogObject) => {
+		await blogService.update(id, blogObject)
+		setBlogs(blogs.map(blog => {
+			if (blog.id === id) {
+				blog.likes += 1
+			}
+			return blog
+		}))
+	}
+
+	const deleteBlog = async (id) => {
+		await blogService.remove(id)
+
+		setBlogs(blogs.filter(blog => blog.id !== id))
+	}
+
+
+
 	if (user === null) {
 		return (
 			<div>
 				<Infomessage message={message} />
-
 				{loginForm()}
-
-
 			</div>
 		)
 	}
 	return (
 		<div>
 			<Infomessage message={message} />
-			<span>Logged in as {user.name} </span> <button onClick={logoutAndRefresh}>Log out</button>
+			<span>Logged in as {user.username} </span> <button onClick={logoutAndRefresh}>Log out</button>
 			<Toggle label={"New blog"}>
-				{BlogForm()}
+				<BlogForm createBlog={sendBlog} />
 			</Toggle>
 			<BlogsList />
 		</div>

@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
-import Blog from "./components/Blog";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import React, { useState, useEffect } from "react"
+import Blog from "./components/Blog"
+import blogService from "./services/blogs"
+import loginService from "./services/login"
 import "./index.css"
-import Infomessage from "./components/Notification";
-import Toggle from "./components/Toggle";
-import BlogForm from "./components/BlogForm";
+import Infomessage from "./components/Notification"
+import Toggle from "./components/Toggle"
+import BlogForm from "./components/BlogForm"
 
 
 const App = () => {
-	const [blogs, setBlogs] = useState([]);
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [user, setUser] = useState(null);
-	const [message, setMessage] = useState(null);
+	const [blogs, setBlogs] = useState([])
+	const [username, setUsername] = useState("")
+	const [password, setPassword] = useState("")
+	const [user, setUser] = useState(null)
+	const [message, setMessage] = useState(null)
 
 
 	useEffect(() => {
 		blogService.getAll()
-			.then((blogs) => setBlogs(blogs));
-	}, []);
+			.then((blogs) => setBlogs(blogs))
+	}, [])
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem("loggedUser")
@@ -33,12 +33,12 @@ const App = () => {
 
 
 	const submitLogin = async (e) => {
-		e.preventDefault();
+		e.preventDefault()
 		try {
 			const user = await loginService.login({
 				username,
 				password,
-			});
+			})
 
 			window.localStorage.setItem(
 				"loggedUser", JSON.stringify(user)
@@ -77,6 +77,7 @@ const App = () => {
 			</form>
 		</div>
 	)
+
 
 	const sendBlog = (blogObject) => {
 		blogService
@@ -145,4 +146,4 @@ const App = () => {
 	)
 }
 
-export default App;
+export default App

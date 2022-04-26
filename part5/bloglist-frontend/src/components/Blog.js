@@ -1,5 +1,5 @@
-import React from "react";
-import Toggle from "./Toggle";
+import React from "react"
+import Toggle from "./Toggle"
 
 const Blog = ({ blog, updateLikes, remove }) => {
   const loggedInUser = JSON.parse(window.localStorage.getItem("loggedUser"))
@@ -17,7 +17,6 @@ const Blog = ({ blog, updateLikes, remove }) => {
   }
 
   const deleteBlog = () => {
-    console.log("test")
     if (window.confirm(`Delete blog ${blog.title} ?`)) {
       remove(blog.id)
     }
@@ -54,4 +53,4 @@ const Blog = ({ blog, updateLikes, remove }) => {
   )
 }
 
-export default Blog;
+export default Blog

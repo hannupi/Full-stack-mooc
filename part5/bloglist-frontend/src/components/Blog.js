@@ -4,7 +4,6 @@ import Toggle from "./Toggle"
 const Blog = ({ blog, updateLikes, remove }) => {
   const loggedInUser = JSON.parse(window.localStorage.getItem("loggedUser"))
 
-
   const addLike = () => {
     const blogObject = {
       user: blog.user.id,
@@ -23,14 +22,14 @@ const Blog = ({ blog, updateLikes, remove }) => {
   }
 
   const DeleteButton = () => {
-    if (blog.user.username === loggedInUser.username) {
-      return (
-        <button onClick={deleteBlog}>Delete</button>
-      )
+    if (loggedInUser) {
+      if (blog.user.username === loggedInUser.username) {
+        return (
+          <button onClick={deleteBlog}>Delete</button>
+        )
+      }
     }
-    else {
-      return null
-    }
+    return null
 
   }
 

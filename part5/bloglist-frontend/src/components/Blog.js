@@ -34,8 +34,10 @@ const Blog = ({ blog, updateLikes, remove }) => {
   }
 
   return (
-    <div>
-      {blog.title} {blog.author}
+    <div className="blog">
+      <p className="blogEntry">
+        {blog.title} {blog.author}
+      </p>
       <Toggle label="View">
         <p>
           {blog.url}

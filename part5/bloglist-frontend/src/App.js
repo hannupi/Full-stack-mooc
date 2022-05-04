@@ -66,14 +66,14 @@ const App = () => {
 			<form onSubmit={submitLogin}>
 				<div>
 					<p>Username</p>
-					<input type="text" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
+					<input type="text" id="username" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
 				</div>
 				<div>
 					<p>Password</p>
-					<input type="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
+					<input type="password" id="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
 				</div>
 				<br></br>
-				<button type="submit">Login</button>
+				<button type="submit" id="loginButton">Login</button>
 			</form>
 		</div>
 	)

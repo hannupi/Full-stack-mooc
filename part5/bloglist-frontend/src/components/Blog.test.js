@@ -24,7 +24,6 @@ test("Shows title and author but not URL or likes", () => {
     expect(screen.getByText("test title Test author"))
     expect(screen.getByText("www.test.com")).not.toBeVisible()
     expect(screen.getByText("Likes:", { exact: false })).not.toBeVisible()
-    screen.debug()
 })
 
 test("URL and likes shown after button press", async () => {
@@ -35,4 +34,16 @@ test("URL and likes shown after button press", async () => {
     expect(screen.getByText("www.test.com")).toBeVisible()
     expect(screen.getByText("Likes:", { exact: false })).toBeVisible()
 
+})
+
+test("Pressing like button twice calls function twice", async () => {
+    const buttonHandler = jest.fn()
+
+    render(<Blog blog={blog} updateLikes={buttonHandler} />)
+
+    const button = screen.getByText("Like")
+    await userEvent.click(button)
+    await userEvent.click(button)
+
+    expect(buttonHandler.mock.calls).toHaveLength(2)
 })

@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 
+export const sendNotification = payload => ({ type: "notifications/newNotifications", payload })
+
+export const removeNotif = () => ({ type: "notifications/removeNotifications" })
+
+
 const notifSlice = createSlice({
     name: "notifications",
     initialState: "",

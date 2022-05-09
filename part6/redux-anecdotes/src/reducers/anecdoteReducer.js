@@ -1,5 +1,26 @@
+import anecdoteService from "../services/anecdotes"
 
 
+export const initAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createAnecdote = anecdote => {
+  return async dispatch => {
+    const newAnec = await anecdoteService.postNew(anecdote)
+    dispatch(postAnecdote(newAnec))
+  }
+}
+
+export const votedAnecdote = anecdote => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.voteAnecdote(anecdote)
+    dispatch(voteUp(anecdotes.id))
+  }
+}
 
 export const voteUp = (id) => {
   return {
@@ -38,10 +59,12 @@ const reducer = (state = initialState, action) => {
         votes: targetAnecdote.votes + 1
       }
       return state.map(anec => anec.id !== id ? anec : changedAnecdote).sort((a, b) => b.votes - a.votes)
+
     case "NEW_ANECDOTE":
       return [...state, action.content]
     case "SET_ANECDOTES":
-      return action.content.map(anec => anec)
+      const anecdotesMapped = action.content.map(anec => anec)
+      return anecdotesMapped
 
     default: return state
   }

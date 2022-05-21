@@ -1,6 +1,8 @@
 import React from "react"
 import Toggle from "./Toggle"
 
+import { Button, Container, } from 'react-bootstrap'
+
 const Blog = ({ blog, updateLikes, remove }) => {
   const loggedInUser = JSON.parse(window.localStorage.getItem("loggedUser"))
 
@@ -25,7 +27,7 @@ const Blog = ({ blog, updateLikes, remove }) => {
     if (loggedInUser) {
       if (blog.user.username === loggedInUser.username) {
         return (
-          <button onClick={deleteBlog}>Delete</button>
+          <Button size="sm" variant="danger" onClick={deleteBlog}>Delete</Button>
         )
       }
     }
@@ -34,23 +36,30 @@ const Blog = ({ blog, updateLikes, remove }) => {
   }
 
   return (
-    <div className="blog">
-      <p className="blogEntry">
-        {blog.title} {blog.author}
-      </p>
-      <Toggle label="View">
-        <p>
-          {blog.url}
-        </p>
-        <p>
-          Likes: {blog.likes} <button onClick={addLike}>Like</button>
-        </p>
-        <p>
-          {blog.user.username}
-        </p>
-        <DeleteButton />
-      </Toggle>
+    <div className="blog pb-1">
+      <Container>
+        <div className="bg- rounded">
+          <div className="blogEntry">
+            {blog.title} {blog.author}
+          </div>
+          <Toggle label="View">
+            <p>
+              {blog.url}
+            </p>
+            <p>
+              Likes: {blog.likes} <Button variant="success" size="sm" onClick={addLike}>Like</Button>
+            </p>
+            <p>
+              {blog.user.username}
+            </p>
+            <DeleteButton />
+          </Toggle>
+        </div>
+      </Container>
+      <br></br>
     </div>
+
+
   )
 }
 

@@ -10,3 +10,8 @@
 body {
     margin: 0;
 }
+
+.navbarButton {
+    margin-left: 5%;
+    background-color: aliceblue;
+}

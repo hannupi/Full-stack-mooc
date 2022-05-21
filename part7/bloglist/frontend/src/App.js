@@ -3,17 +3,15 @@ import Blog from "./components/Blog"
 import blogService from "./services/blogs"
 import loginService from "./services/login"
 import userService from "./services/users"
-import "./index.css"
 import Infomessage from "./components/Notification"
 import Toggle from "./components/Toggle"
 import BlogForm from "./components/BlogForm"
 import { BrowserRouter as Router, Routes, Route, Link, useParams } from "react-router-dom"
 
+
 import 'bootstrap/dist/css/bootstrap.min.css'
-import Button from 'react-bootstrap/Button'
-import Container from 'react-bootstrap/Container'
-
-
+import { Button, Container, Navbar, Form } from 'react-bootstrap'
+import "./index.css"
 
 const App = () => {
 	const [blogs, setBlogs] = useState([])
@@ -44,16 +42,26 @@ const App = () => {
 	}, [])
 
 	const Menu = () => {
-		const pad = {
-			padding: 6,
-		}
-
 		return (
 			<div>
-				<Link to="/" style={pad}>Blogs</Link>
-				<Link to="/users" style={pad}>Users</Link>
-				<span style={pad}>Logged in as {user.username} </span>
-				<Button variant="outline-secondary" size="sm" onClick={logoutAndRefresh}>Log out</Button>
+				<Navbar className="my-3 bg-primary"  >
+					<Button className="navbarButton" variant="info">
+						<Link to="/" >Blogs</Link>
+					</Button>
+					<Button className="navbarButton " variant="info">
+						<Link to="/users">Users</Link>
+					</Button>
+
+					<Container className="justify-content-end " >
+						<Button variant="danger" className="" size="sm" onClick={logoutAndRefresh}>Log out</Button>
+
+						<Navbar.Text className="mx-3 text-white" >
+							Logged in as: {user.username}
+						</Navbar.Text>
+					</Container>
+				</Navbar>
+
+
 			</div>
 		)
 	}
@@ -88,19 +96,21 @@ const App = () => {
 
 	const loginForm = () => (
 		<div>
-			<h2>Login</h2>
-			<form onSubmit={submitLogin}>
-				<div>
-					<p>Username</p>
-					<input type="text" id="username" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
-				</div>
-				<div>
-					<p>Password</p>
-					<input type="password" id="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
-				</div>
-				<br></br>
-				<button type="submit" id="loginButton">Login</button>
-			</form>
+			<Container className="mt-5">
+				<h2>Login</h2>
+				<Form onSubmit={submitLogin}>
+					<div>
+						<Form.Label>Username</Form.Label>
+						<Form.Control size="sm" type="text" id="username" value={username} name="Username" onChange={({ target }) => setUsername(target.value)} />
+					</div>
+					<div>
+						<Form.Label>Password</Form.Label>
+						<Form.Control size="sm" type="password" id="password" value={password} name="Password" onChange={({ target }) => setPassword(target.value)} />
+					</div>
+					<br></br>
+					<Button type="submit" id="loginButton">Login</Button>
+				</Form>
+			</Container>
 		</div>
 	)
 
@@ -125,7 +135,7 @@ const App = () => {
 
 	const BlogsList = () => {
 		return (
-			<div>
+			<div className="mt-4">
 				<h2>Blogs</h2>
 				{blogs.sort((a, b) => b.likes - a.likes)
 					.map((blog) => (<Blog key={blog.id} blog={blog} updateLikes={blogUpdate} remove={deleteBlog} />))}
@@ -152,10 +162,10 @@ const App = () => {
 	const Users = () => {
 		return (
 			<div>
-				<h2>Users</h2>
+				<h2>Users and amount of created blogs</h2>
 				{users.sort((a, b) => b.blogs.length - a.blogs.length).map(user =>
 					<div key={user.id}>
-						<Link to={`/users/${user.id}`}>{user.username}</Link> {user.blogs.length}
+						<Link to={`/users/${user.id}`}>{user.username}</Link> - {user.blogs.length}
 					</div>
 				)}
 			</div>
@@ -171,7 +181,8 @@ const App = () => {
 		}
 		return (
 			<div>
-				<h2>{user.username}</h2>
+				<h2>User: {user.username}</h2>
+				<br></br>
 				<h3>Added blogs</h3>
 				{user.blogs.map(blog => <li key={blog.id}> {blog.title} </li>)}
 			</div>
@@ -194,7 +205,9 @@ const App = () => {
 				<Routes>
 					<Route path="/" element={<>
 						<Infomessage message={message} />
-						<Toggle label={"New blog"}>
+						<h2>Create a new blog</h2>
+
+						<Toggle label={"New blog"} >
 							<BlogForm createBlog={sendBlog} />
 						</Toggle>
 						<BlogsList />

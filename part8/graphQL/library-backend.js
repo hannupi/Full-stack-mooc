@@ -46,8 +46,8 @@ const typeDefs = gql`
     type Query {
       bookCount: Int!
       authorCount: Int!
-      allBooks(author: String, genre: String): [Book]
-      allAuthors: [Author]
+      allBooks(author: String, genre: String): [Book]!
+      allAuthors: [Author]!
       me: User
     }
 
@@ -81,12 +81,11 @@ const resolvers = {
         bookCount: async () => Book.collection.countDocuments(),
         authorCount: async () => Author.collection.countDocuments(),
         allBooks: async (root, args) => {
-            console.log("args", args)
             const author = await Author.findOne({ name: args.author })
 
-            var filteredBooks = await Book.find({})
+            var filteredBooks = await Book.find({}).populate("author")
             if (args.author) {
-                filteredBooks = await Book.find({ author: author._id })
+                filteredBooks = await Book.find({ author: author._id }).populate("author")
             }
             // No new query to save previous state
             if (args.genre) {
@@ -116,7 +115,6 @@ const resolvers = {
             if (!context.currentUser) {
                 throw new UserInputError("Log in before adding a book")
             }
-
             if (await Book.findOne({ title: args.title })) {
                 throw new UserInputError("Book already exists with this title!", {
                     invalidArgs: args
@@ -125,7 +123,6 @@ const resolvers = {
 
             try {
                 var author = await Author.findOne({ name: args.author })
-
                 if (!author) {
                     author = new Author({ name: args.author })
                 }

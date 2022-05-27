@@ -5,6 +5,7 @@ const { PubSub } = require('graphql-subscriptions')
 const pubsub = new PubSub()
 const Author = require("./models/author")
 const Book = require("./models/book")
+const User = require("./models/user")
 
 const resolvers = {
     Query: {

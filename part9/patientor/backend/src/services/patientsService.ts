@@ -14,16 +14,13 @@ const getPatients = (): Omit<patientsEntry, "ssn">[] => {
     }));
 };
 
-
 const addPatient = (entry: NewPatientEntry): patientsEntry => {
     const newPatientEntry = {
         id: uuid(),
         ...entry
-    }
-    console.log(newPatientEntry)
-    console.log(entry)
-    patients.push(newPatientEntry)
-    return newPatientEntry
+    };
+    patients.push(newPatientEntry);
+    return newPatientEntry;
 };
 
 export default {

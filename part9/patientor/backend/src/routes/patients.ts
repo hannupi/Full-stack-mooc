@@ -8,6 +8,16 @@ router.get("/", (_req, res) => {
     res.send(patientsService.getPatients());
 });
 
+router.get("/:id", (req, res) => {
+    const patient = patientsService.getPatientId(req.params.id);
+    if (patient) {
+        res.send(patient);
+    }
+    else {
+        res.send("wrong id")
+    }
+})
+
 router.post("/", (req, res) => {
     try {
         const newPatientEntry = toNewPatientEntry(req.body);
@@ -21,5 +31,7 @@ router.post("/", (req, res) => {
         res.status(400).send(errorMessage);
     }
 });
+
+router
 
 export default router;

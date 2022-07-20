@@ -3,8 +3,10 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { Patient } from "../types";
+import { setPatient, useStateValue } from "../state";
 
 const PatientDataPage = () => {
+    const [{ patient }, dispatch] = useStateValue();
 
     const { id } = useParams<{ id: string }>();
 
@@ -18,6 +20,7 @@ const PatientDataPage = () => {
                 const { data: patientData } = await axios.get<Patient>(
                     `${apiBaseUrl}/patients/${id}`);
                 console.log(patientData);
+                dispatch(setPatient(patientData));
             }
             catch (error: unknown) {
                 let errorMessage = 'Something went wrong.';
@@ -26,16 +29,17 @@ const PatientDataPage = () => {
                 }
                 console.error(errorMessage);
             }
-
         };
-        void fetchPatientData();
+        if (!patient) {
+            void fetchPatientData();
+        }
     }, []);
 
     return (
         <div>
-            <h2><b> name </b></h2>
-            <p>ssh: </p>
-            <p>occupation: </p>
+            <h2><b> {patient?.name} </b></h2>
+            <p>ssh: {patient?.ssn}</p>
+            <p>occupation: {patient?.occupation}</p>
         </div>
     );
 };

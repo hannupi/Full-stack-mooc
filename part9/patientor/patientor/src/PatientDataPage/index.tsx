@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
-import { Patient } from "../types";
+import { Entry, Patient } from "../types";
 import { setPatient, useStateValue } from "../state";
 
 const PatientDataPage = () => {
@@ -30,16 +30,26 @@ const PatientDataPage = () => {
                 console.error(errorMessage);
             }
         };
-        if (!patient) {
+        if (!patient || id !== patient?.id) {
             void fetchPatientData();
         }
     }, []);
+    console.log(patient);
 
     return (
         <div>
-            <h2><b> {patient?.name} </b></h2>
-            <p>ssh: {patient?.ssn}</p>
-            <p>occupation: {patient?.occupation}</p>
+            <div>
+                <h2><b> {patient?.name} </b></h2>
+                <p>ssh: {patient?.ssn}</p>
+                <p>occupation: {patient?.occupation}</p>
+            </div>
+            <div>
+                <h2>Entries</h2>
+                {patient?.entries?.map(
+                    (entry: Entry) => <div key={entry.id}>{entry.date} {entry.description}
+                        {entry.diagnosisCodes?.map(code => <li key={code}>{code}</li>)} </div>
+                )}
+            </div>
         </div>
     );
 };

@@ -6,7 +6,8 @@ import { Entry, Patient } from "../types";
 import { setPatient, useStateValue } from "../state";
 
 const PatientDataPage = () => {
-    const [{ patient }, dispatch] = useStateValue();
+    const [{ patient, diagnoses }, dispatch] = useStateValue();
+    diagnoses.map(d => console.log(d));
 
     const { id } = useParams<{ id: string }>();
 
@@ -47,7 +48,11 @@ const PatientDataPage = () => {
                 <h2>Entries</h2>
                 {patient?.entries?.map(
                     (entry: Entry) => <div key={entry.id}>{entry.date} {entry.description}
-                        {entry.diagnosisCodes?.map(code => <li key={code}>{code}</li>)} </div>
+                        {entry.diagnosisCodes?.map(code =>
+                            <li key={code}> {code}
+                                {diagnoses.filter(d => d.code === code)
+                                    .map((diagnose) => <span key={diagnose.code}> {diagnose.name}</span>)}
+                            </li>)} </div>
                 )}
             </div>
         </div>

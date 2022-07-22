@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { Entry, Patient } from "../types";
 import { setPatient, useStateValue } from "../state";
+import PatientEntry from "./PatientEntry";
 
 const PatientDataPage = () => {
-    const [{ patient, diagnoses }, dispatch] = useStateValue();
-    diagnoses.map(d => console.log(d));
+    const [{ patient, }, dispatch] = useStateValue();
 
     const { id } = useParams<{ id: string }>();
 
@@ -20,7 +20,6 @@ const PatientDataPage = () => {
             try {
                 const { data: patientData } = await axios.get<Patient>(
                     `${apiBaseUrl}/patients/${id}`);
-                console.log(patientData);
                 dispatch(setPatient(patientData));
             }
             catch (error: unknown) {
@@ -35,7 +34,6 @@ const PatientDataPage = () => {
             void fetchPatientData();
         }
     }, []);
-    console.log(patient);
 
     return (
         <div>
@@ -46,14 +44,7 @@ const PatientDataPage = () => {
             </div>
             <div>
                 <h2>Entries</h2>
-                {patient?.entries?.map(
-                    (entry: Entry) => <div key={entry.id}>{entry.date} {entry.description}
-                        {entry.diagnosisCodes?.map(code =>
-                            <li key={code}> {code}
-                                {diagnoses.filter(d => d.code === code)
-                                    .map((diagnose) => <span key={diagnose.code}> {diagnose.name}</span>)}
-                            </li>)} </div>
-                )}
+                {patient?.entries?.map((entry: Entry) => <PatientEntry key={entry.id} entry={entry} />)}
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { NewPatientEntry, Gender } from "./types";
+import { NewPatientEntry, Gender, HealthCheckRating, } from "./types";
 
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
@@ -62,5 +62,87 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
 
     return newEntry;
 };
+
+const parseDate = (date: string): string => {
+    if (!date || !isDate(date)) {
+        throw new Error('Incorrect or missing date: ' + date);
+    }
+    return date
+}
+
+const parseSpecialist = (specialist: unknown): string => {
+    if (!specialist || !isString(specialist)) {
+        throw new Error("Incorrect or missing specialist");
+    }
+    return specialist;
+}
+
+const parseDescription = (description: unknown): string => {
+    if (!description || !isString(description)) {
+        throw new Error("Incorrect or missing description");
+    }
+    return description;
+}
+
+const parseCriteria = (criteria: unknown): string => {
+    if (!criteria || !isString(criteria)) {
+        throw new Error("Incorrect or missing criteria");
+    }
+    return criteria;
+}
+
+const parseEmployerName = (employerName: unknown): string => {
+    if (!employerName || !isString(employerName)) {
+        throw new Error("Incorrect or missing employerName");
+    }
+    return employerName;
+}
+
+const isHealthCheckRating = (param: any): param is HealthCheckRating => {
+    return Object.values(HealthCheckRating).includes(param);
+}
+
+const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
+    if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+        throw new Error("Incorrect or missing healthCheckRating");
+    }
+    return healthCheckRating;
+}
+
+export const toNewEntry = (object: any) => {
+    const newPatientEntry = {
+        date: parseDate(object.date),
+        specialist: parseSpecialist(object.specialist),
+        description: parseDescription(object.description),
+        type: object.type,
+    }
+    switch (object.type) {
+        case 'Hospital':
+            return {
+                ...newPatientEntry,
+                discharge: {
+                    date: parseDate(object.discharge.date),
+                    criteria: parseCriteria(object.discharge.criteria)
+                }
+            }
+        case 'OccupationalHealthcare':
+            return {
+                ...newPatientEntry,
+                employerName: parseEmployerName(object.employerName),
+                sickLeave: {
+                    startDate: parseDate(object.sickLeave.startDate),
+                    endDate: parseDate(object.sickLeave.endDate)
+                }
+            }
+        case 'HealthCheck':
+            return {
+                ...newPatientEntry,
+                healthCheckRating: parseHealthCheckRating(object.healthCheckRating)
+            }
+        default:
+            throw new Error("Incorrect or missing type")
+    }
+
+}
 
 export default toNewPatientEntry;

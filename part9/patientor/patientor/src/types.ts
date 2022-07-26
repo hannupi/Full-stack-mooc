@@ -14,7 +14,6 @@ export interface BaseEntry {
   id: string;
   date: string;
   specialist: string;
-  type: string;
   description: string;
   employerName?: string;
   diagnosisCodes?: Array<Diagnosis['code']>
@@ -47,6 +46,7 @@ export interface HospitalEntry extends BaseEntry {
     criteria: string;
   }
 }
+
 
 export type Entry = HealthCheckEntry | HospitalEntry | OccupationalHealthcareEntry;
 

@@ -98,13 +98,13 @@ const parseEmployerName = (employerName: unknown): string => {
     return employerName;
 }
 
-const isHealthCheckRating = (param: any): param is HealthCheckRating => {
+const isHealthCheckRating = (param: any): param is number => {
     return Object.values(HealthCheckRating).includes(param);
 }
 
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-    if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
-        throw new Error("Incorrect or missing healthCheckRating");
+    if (!isHealthCheckRating(healthCheckRating)) {
+        throw new Error(`Incorrect or missing healthCheckRating ${isHealthCheckRating(healthCheckRating)}`);
     }
     return healthCheckRating;
 }
